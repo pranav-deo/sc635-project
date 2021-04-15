@@ -1,0 +1,4 @@
+sc635
+*.pyc
+__pycache__
+.git

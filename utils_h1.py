@@ -1,3 +1,7 @@
+from python_tsp.exact import solve_tsp_dynamic_programming
+import numpy as np
+
+
 def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, time_taken):
     latest_nodes = nodes_at[:]
     # print(time_taken, nodes_at)
@@ -50,12 +54,25 @@ def min_latency(Vs, v0, num_uav, Gm, Gc):
 
 def solve_tsp(Vs, Gm):
     """
-    Input:  Vs -> list of SL node nmbers
+    Input:  Vs -> list of SL node numbers
             Gm -> Movement Graph
 
-    Output: T -> Tour path (List of nodes in the path)
+    Output: T -> List of Tour path (List of nodes in the path) for each start point
     """
-    pass
+
+    # Gm_new = {}
+    for v in Vs:
+        #     Gm_new[v] = [v_ for v_ in Gm[v] if v_ in Vs]
+
+    distance_matrix = [[float('inf') for _ in range(len(Gm_new.keys()))] for _ in range(len(Gm_new.keys()))]
+    # for i in range()
+
+    distance_matrix_np = np.array(distance_matrix)
+    # distance_matrix_np[:, [V, 0]] = distance_matrix_np[:, [0, V]]
+    # distance_matrix_np[[V, 0], :] = distance_matrix_np[[0, V], :]
+    distance_matrix_np[:, 0] = 0
+
+    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
 
 def split_tour(T, k):
@@ -76,7 +93,36 @@ def distGM(Gm, ev, sv):
 
     Output: len_path -> length of the shortest path between ev and sv in Gm
     """
-    pass
+    src = sv
+    dest = ev
+    V = len(Gm.keys())
+    visited = [False] * (V)
+    parent = [-1] * (V)
+
+    # Create a queue for BFS
+    queue = []
+
+    # Mark the source node as visited and enqueue it
+    queue.append(src)
+    visited[src] = True
+
+    while queue:
+
+        # Dequeue a vertex from queue
+        s = queue.pop(0)
+
+        # if s = dest then print the path and return
+        if s == dest:
+            return printPath(Gm, parent, s)
+
+        # Get all adjacent vertices of the dequeued vertex s
+        # If a adjacent has not been visited, then mark it
+        # visited and enqueue it
+        for i in Gm[s]:
+            if visited[i] is False:
+                queue.append(i)
+                visited[i] = True
+                parent[i] = s
 
 
 def minmax_matching(A):
@@ -102,3 +148,15 @@ def mlp(v, v0, gamma_v, Gm, Gc):
             et -> list of end time for each UAV
     """
     pass
+
+
+def printPath(Gm, parent, j):
+    Path_len = 1
+    V_org = len(Gm.keys())
+    if parent[j] == -1 and j < V_org:  # Base Case : If j is source
+        return 0  # when parent[-1] then path length = 0
+    ll = printPath(Gm, parent, parent[j])
+
+    Path_len = ll + Path_len
+
+    return Path_len
