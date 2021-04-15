@@ -31,8 +31,8 @@ V0 = 0  # Base station Node
 # x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
 # print(x)
 
-T = solve_tsp(Vs, Gm)
-print(T)
+optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
+print(optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost)
 
 
 def give_m1(Gm, Gc, Vs, r, Lc, V0):
