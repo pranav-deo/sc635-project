@@ -50,9 +50,14 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
         v_ = V0
 
         for v in tour_array[i]:
-            (svv, evv, stv, etv) = mlp(v, V0, gammas[v], Gm, Gc)
+            (sv_array, ev_array, st_array, et_array) = mlp(v, V0, gammas[v], Gm, Gc)
 
-            A = {}
+            num_rows = len(list(range(1, gammas[v])))
+            num_cols = len(Ri)
+            A = [[0 for i in range(num_cols)] for i in range(num_rows)]
 
-            for l in range(1, gammas[v]):
-                for m in Ri:
+            for ll in range(1, gammas[v]):
+                for mm in Ri:
+                    A[ll][mm] = st_array[v_] + et_array[v_][mm] + distGM(ev_array[v_][mm] + sv_array[v][ll])
+
+            M = minmax_matching(A)
