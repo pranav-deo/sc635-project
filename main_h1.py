@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Algorithm 1: Heuristic for MILC(MILC - H1).
 
@@ -9,12 +11,11 @@ Output: subtours t 1, . . ., t k, MLP and schedule (st(v), sv v, ev v, st v) ∀
 # G = {0: {1, 3, 4}, 1: {0, 4, 2}, 2: {1, 4, 5}, 3: {0, 1, 4, 7, 6}, 4: {0, 1, 2, 5, 8, 7, 6, 3},
 #      5:{1,2,4,7,8}, 6:{3,4,7,10,9}, 7:{3,4,5,,8,11,10,9,6}, 8:{5,4,7,10,11}, 9:{}}
 
-# 8 -> S, 0 -> BS
-
 
 import numpy as np
 from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp
 
+# 8 -> SL, 0 -> BS
 # Movement Graph
 Gm = {8: [5], 5: [4, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
 
@@ -26,8 +27,12 @@ r = 2  # Maximum Number of UAVs
 Lc = 4  # Maximum Latencies
 V0 = 0  # Base station Node
 
-x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
-print(x)
+# x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
+# print(x)
+
+T = solve_tsp(Vs, Gm)
+print(T)
+
 
 def give_m1(Gm, Gc, Vs, r, Lc, V0):
     gammas = [float('inf') for v in range(len(Vs))]
@@ -41,7 +46,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
                 gammas[ii] = num_uav
 
     if max(gammas) > r:
-        print("Problem is infeasible!")
+        # print("Problem is infeasible!")
         return None
 
     new_Vs = [v for v in Vs if v not in Gc[V0]]

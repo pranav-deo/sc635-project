@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from python_tsp.exact import solve_tsp_dynamic_programming
 import numpy as np
 
@@ -17,7 +19,7 @@ def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, time_taken):
                         nodes_at.append(new_node)
                         latest_nodes_new.append(new_node)
         latest_nodes = latest_nodes_new[:]
-    print(time_taken, nodes_at)
+    # print(time_taken, nodes_at)
     nodes_at_new = []
     for node in nodes_at:
         if node[0] == v:
@@ -59,20 +61,82 @@ def solve_tsp(Vs, Gm):
 
     Output: T -> List of Tour path (List of nodes in the path) for each start point
     """
+    distance_matrix = [[float('inf') for _ in range(len(Gm.keys()))] for _ in range(len(Gm.keys()))]
+    for v in Gm.keys():
+        for neigh in Gm[v]:
+            distance_matrix[v][neigh] = 1
+            distance_matrix[neigh][v] = 1
+            distance_matrix[neigh][neigh] = 0
+            distance_matrix[v][v] = 0
 
-    # Gm_new = {}
-    for v in Vs:
-        #     Gm_new[v] = [v_ for v_ in Gm[v] if v_ in Vs]
+    set_to_points_dict = {0: Vs}
+    optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost = DP_Set_TSP(set_to_points_dict, distance_matrix)
+    return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost
+    # pass
 
-    distance_matrix = [[float('inf') for _ in range(len(Gm_new.keys()))] for _ in range(len(Gm_new.keys()))]
-    # for i in range()
 
-    distance_matrix_np = np.array(distance_matrix)
-    # distance_matrix_np[:, [V, 0]] = distance_matrix_np[:, [0, V]]
-    # distance_matrix_np[[V, 0], :] = distance_matrix_np[[0, V], :]
-    distance_matrix_np[:, 0] = 0
+def DP_Set_TSP(set_to_points_dict, distances_array):
+    all_sets = set(set_to_points_dict.keys())
+    n_sets = len(all_sets)
 
-    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
+    # memo keys: tuple(sorted_sets_in_path, last_set_in_path, last_point_in_path)
+    # memo values: tuple(cost_thus_far, next_to_last_set_in_path, next_to_last_point_in_path)
+    memo = {(tuple([set_idx]), set_idx, p_idx): tuple([0, None, None])
+            for set_idx, points_idxs in set_to_points_dict.items()
+            for p_idx in points_idxs}
+    queue = [(tuple([set_idx]), set_idx, p_idx)
+             for set_idx, points_idxs in set_to_points_dict.items()
+             for p_idx in points_idxs]
+
+    while queue:
+        prev_visited_sets, prev_last_set, prev_last_point = queue.pop(0)
+        prev_dist, _, _ = memo[(prev_visited_sets, prev_last_set, prev_last_point)]
+
+        to_visit = all_sets.difference(set(prev_visited_sets))
+        for new_last_set in to_visit:
+            new_visited_sets = tuple(sorted(list(prev_visited_sets) + [new_last_set]))
+            for new_last_point in set_to_points_dict[new_last_set]:
+                new_dist = prev_dist + distances_array[prev_last_point][new_last_point]
+
+                new_key = (new_visited_sets, new_last_set, new_last_point)
+                new_value = (new_dist, prev_last_set, prev_last_point)
+
+                if new_key not in memo:
+                    memo[new_key] = new_value
+                    queue += [new_key]
+                else:
+                    if new_dist < memo[new_key][0]:
+                        memo[new_key] = new_value
+
+    optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost = retrace_optimal_path(memo, n_sets)
+
+    return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost
+
+
+def retrace_optimal_path(memo: dict, n_sets: int) -> [[int], [int], float]:
+    sets_to_retrace = tuple(range(n_sets))
+
+    full_path_memo = dict((k, v) for k, v in memo.items() if k[0] == sets_to_retrace)
+    path_key = min(full_path_memo.keys(), key=lambda x: full_path_memo[x][0])
+
+    _, last_set, last_point = path_key
+    optimal_cost, next_to_last_set, next_to_last_point = memo[path_key]
+
+    optimal_path_in_points_idxs = [last_point]
+    optimal_path_in_sets_idxs = [last_set]
+    sets_to_retrace = tuple(sorted(set(sets_to_retrace).difference({last_set})))
+
+    while next_to_last_set is not None:
+        last_point = next_to_last_point
+        last_set = next_to_last_set
+        path_key = (sets_to_retrace, last_set, last_point)
+        _, next_to_last_set, next_to_last_point = memo[path_key]
+
+        optimal_path_in_points_idxs = [last_point] + optimal_path_in_points_idxs
+        optimal_path_in_sets_idxs = [last_set] + optimal_path_in_sets_idxs
+        sets_to_retrace = tuple(sorted(set(sets_to_retrace).difference({last_set})))
+
+    return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost
 
 
 def split_tour(T, k):
