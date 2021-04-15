@@ -1,3 +1,10 @@
+def min_dist(v, v0, Gm, Gc, num_uavs, nodes_at, nodes_used, time_taken):
+    len_nodes_at = len(nodes_at)
+    for i in range(len_nodes_at):
+        if num_uavs[i] > 1:
+            for node in Gc[nodes_at[i]]:
+                if not
+
 
 def min_latency(Vs, v0, num_uav, Gm, Gc):
     """
@@ -11,8 +18,7 @@ def min_latency(Vs, v0, num_uav, Gm, Gc):
     """
     dis_array = []
     for v in Vs:
-        # Fill dis_array using Dijkstra
-        pass
+        min_dist(v, v0, Gm, Gc, [num_uav], [v0], [v0], 0)
     return dis_array
 
 
