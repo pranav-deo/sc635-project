@@ -2,9 +2,7 @@
 
 """
 Algorithm 1: Heuristic for MILC(MILC - H1).
-
 Input: movement and communication graphs GM, GC, sensing locations VS, number of UAVs r, latency bound Lc
-
 Output: subtours t 1, . . ., t k, MLP and schedule (st(v), sv v, ev v, st v) ∀v ∈ V S
 """
 
@@ -41,8 +39,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
     for num_uav in range(r, 0, -1):
         # All MLPs from all v ∈ Vs to the BS with i UAVs:
         dist_array = min_latency(Vs, V0, num_uav, Gm, Gc)
-
-        for ii in Vs:
+        for ii in range(len(Vs)):
             if dist_array[ii] <= Lc:
                 gammas[ii] = num_uav
 
@@ -55,10 +52,11 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
     k = r // gamma
 
     optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
-    print("----")
-    print(optimal_path_in_points_idxs)
-    exit()
+    # print("----")
+    # print(optimal_path_in_points_idxs)
+    # exit()
     tour_array = split_tour(optimal_path_in_points_idxs, k, Lc, distance_matrix)
+
     for ii in range(1, k + 1):
         Ri = list(range((ii - 1) * gamma + 1, ii * gamma + 1))
         v_ = V0
