@@ -17,7 +17,7 @@ from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching
 
 # 8 -> SL, 0 -> BS
 # Movement Graph
-Gm = {8: [5], 5: [4, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
+Gm = {8: [5], 5: [4, 8, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
 
 
 # Communication Graph
