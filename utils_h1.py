@@ -42,7 +42,7 @@ def distGM(ev, sv):
             sv -> start node
             Gm -> Movement Graph
 
-    Output: len_path -> length of the shortest path between ev and sv in Gm 
+    Output: len_path -> length of the shortest path between ev and sv in Gm
     """
     pass
 
