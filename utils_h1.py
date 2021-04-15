@@ -1,5 +1,14 @@
 
 def min_latency(Vs, v0, num_uav, Gm, Gc):
+    """
+    Input:  Vs -> list of SL node nmbers
+            v0 -> Initial node number
+            num_uav -> Number of uav available
+            Gm -> Movement Graph
+            Gc -> Communication Graph
+
+    Output: dis_array -> list of minimum latencies from each vertex in Vs to v0
+    """
     dis_array = []
     for v in Vs:
         # Fill dis_array using Dijkstra
