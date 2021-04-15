@@ -12,7 +12,7 @@ Output: subtours t 1, . . ., t k, MLP and schedule (st(v), sv v, ev v, st v) ∀
 
 # 8 -> S, 0 -> BS
 
-from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching
+from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp
 
 Gm = {8: [5], 5: [4, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
 Gc = {8: [5, 4, 6], 5: [4, 6], 6: [5, 8, 7], 4: [5, 3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
@@ -49,7 +49,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
         Ri = list(range((ii - 1) * gamma + 1, ii * gamma + 1))
         v_ = V0
 
-        for v in tour_array[i]:
+        for v in tour_array[num_uav]:
             (sv_array, ev_array, st_array, et_array) = mlp(v, V0, gammas[v], Gm, Gc)
 
             num_rows = len(list(range(1, gammas[v])))
@@ -61,3 +61,11 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
                     A[ll][mm] = st_array[v_] + et_array[v_][mm] + distGM(ev_array[v_][mm] + sv_array[v][ll])
 
             M = minmax_matching(A)
+
+            for mm in Ri:
+                sv_array[v][mm] = sv_array[v][M[mm]]
+                ev_array[v][mm] = ev_array[v][M[mm]]
+                st_array[v][mm] = st_array[v][M[mm]]
+                et_array[v][mm] = et_array[v][M[mm]]
+            st_array[v] = st_array[v_] + min([et_array[v_][mm] + distGM(ev_array[v_][mm], sv_array[v][mm]) for mm in Ri])
+            v_ = v
