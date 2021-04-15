@@ -2,6 +2,9 @@
 
 from python_tsp.exact import solve_tsp_dynamic_programming
 import numpy as np
+from skimage.future.graph import rag
+import networkx as nx
+from matplotlib import pyplot as plt
 
 
 def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, time_taken):
@@ -69,7 +72,18 @@ def solve_tsp(Vs, Gm):
             distance_matrix[neigh][neigh] = 0
             distance_matrix[v][v] = 0
 
-    set_to_points_dict = {0: Vs}
+    # for row in range(len(distance_matrix)):
+    #     for col in range(len(distance_matrix[0])):
+    #         if distance_matrix[row][col] == float('inf'):
+    #             distance_matrix[row][col] = distGM(Gm, row, col)
+    #             if distGM(Gm, row, col) is None:
+    #                 print(row, col)
+    #                 assert 1 == 0
+
+    # print(distance_matrix)
+    print(distGM(Gm, 0, 8))
+
+    set_to_points_dict = {0: Vs, 1: [0]}
     optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost = DP_Set_TSP(set_to_points_dict, distance_matrix)
     return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost
     # pass
@@ -222,5 +236,17 @@ def printPath(Gm, parent, j):
     ll = printPath(Gm, parent, parent[j])
 
     Path_len = ll + Path_len
-
+    if Path_len is None:
+        print(ll, Path_len)
+        assert 1 == 0
     return Path_len
+
+
+def plot_graph(G):
+    g = nx.Graph()
+    for v in Gm.keys():
+        for neigh in Gm[v]:
+            g.add_edge(neigh, v)
+
+    nx.draw(g, with_labels=True, font_weight='bold')
+    plt.show()
