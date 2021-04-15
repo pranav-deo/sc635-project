@@ -62,7 +62,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
 
             for ll in range(1, gammas[v]):
                 for mm in Ri:
-                    A[ll][mm] = min(old_st_array) + old_et_array[mm] + distGM(old_ev_array[mm] + sv_array[ll])
+                    A[ll][mm] = min(old_st_array) + old_et_array[mm] + distGM(Gm, old_ev_array[mm] + sv_array[ll])
 
             M = minmax_matching(A)
 
@@ -71,6 +71,6 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
                 ev_array[mm] = ev_array[M[mm]]
                 st_array[mm] = st_array[M[mm]]
                 et_array[mm] = et_array[M[mm]]
-            st_array[np.argmin(st_array)] = min(old_st_array) + min([old_et_array[mm] + distGM(old_ev_array[mm], sv_array[mm]) for mm in Ri])
+            st_array[np.argmin(st_array)] = min(old_st_array) + min([old_et_array[mm] + distGM(Gm, old_ev_array[mm], sv_array[mm]) for mm in Ri])
             v_ = v
             old_ev_array, old_st_array, old_et_array = ev_array, st_array, et_array
