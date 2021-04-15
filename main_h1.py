@@ -25,6 +25,8 @@ r = 2  # Maximum Number of UAVs
 Lc = 4  # Maximum Latencies
 V0 = 0  # Base station Node
 
+x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
+print(x)
 
 def give_m1(Gm, Gc, Vs, r, Lc, V0):
     gammas = [float('inf') for v in range(len(Vs))]
