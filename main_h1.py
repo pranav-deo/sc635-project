@@ -16,9 +16,9 @@ import numpy as np
 from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp, plot_graph
 
 # 8 -> SL, 0 -> BS
+
 # Movement Graph
 Gm = {8: [5], 5: [4, 8, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
-
 
 # Communication Graph
 Gc = {8: [5, 4, 6], 5: [8, 6], 6: [5, 8, 7], 4: [3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
@@ -47,7 +47,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
                 gammas[ii] = num_uav
 
     if max(gammas) > r:
-        # print("Problem is infeasible!")
+        print("Problem is infeasible!")
         return None
 
     new_Vs = [v for v in Vs if v not in Gc[V0]]
