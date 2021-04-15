@@ -153,14 +153,33 @@ def retrace_optimal_path(memo: dict, n_sets: int) -> [[int], [int], float]:
     return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost
 
 
-def split_tour(T, k):
+def split_tour(T, k, c_max, dist_mat):
     """
     Input:  T -> Tour path (List of nodes in the path)
             k -> number of uav in the path
 
     Output: tours_array -> List of lists of tours (i.e. list of nodes in the path)
     """
-    pass
+    paths = []
+    L = 0
+    for i in range(len(T) - 1):
+        L += dist_mat[i][i + 1]
+    factor = (L - 2 * c_max)
+    pointer = 1
+    for j in range(1, k + 1):
+        max_cost_now = (j / k) * factor + c_max
+        start = pointer
+        cost_now = dist_mat[0][pointer]
+        while cost_now < max_cost_now:
+            pointer += 1
+            cost_now += dist_mat[pointer - 1][pointer]
+        pointer -= 1
+        path = [T[0]]
+        for k in range(start, pointer + 1):
+            path.append(T[k])
+        path.append(T[0])
+        paths.append(path)
+    return paths
 
 
 def distGM(Gm, ev, sv):
