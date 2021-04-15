@@ -54,7 +54,7 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
     gamma = max(new_Vs)
     k = r // gamma
 
-    T = solve_tsp(Vs, Gm)
+    optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
     tour_array = split_tour(T, k)
 
     for ii in range(1, k + 1):
