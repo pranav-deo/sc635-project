@@ -74,13 +74,15 @@ def solve_tsp(Vs, Gm):
 
     for row in range(len(distance_matrix)):
         for col in range(len(distance_matrix[0])):
+            if row > col:
+                distance_matrix[row][col] = distance_matrix[col][row]
+                continue
             if distance_matrix[row][col] == float('inf'):
                 distance_matrix[row][col] = distGM(Gm, row, col)
 
     set_to_points_dict = {0: Vs, 1: [0]}
     optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost = DP_Set_TSP(set_to_points_dict, distance_matrix)
     return optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix
-    # pass
 
 
 def DP_Set_TSP(set_to_points_dict, distances_array):
