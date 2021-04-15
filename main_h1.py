@@ -14,13 +14,16 @@ Output: subtours t 1, . . ., t k, MLP and schedule (st(v), sv v, ev v, st v) ∀
 
 from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp
 
+# Movement Graph
 Gm = {8: [5], 5: [4, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1], 0: [1]}
+
+# Communication Graph
 Gc = {8: [5, 4, 6], 5: [8, 6], 6: [5, 8, 7], 4: [3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
 
-Vs = [8]
-r = 2
-Lc = 4
-V0 = 0
+Vs = [8]  # List of SLs
+r = 2  # Maximum Number of UAVs
+Lc = 4  # Maximum Latencies
+V0 = 0  # Base station Node
 
 
 def give_m1(Gm, Gc, Vs, r, Lc, V0):
