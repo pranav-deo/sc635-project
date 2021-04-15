@@ -68,13 +68,13 @@ def split_tour(T, k):
     pass
 
 
-def distGM(ev, sv):
+def distGM(Gm, ev, sv):
     """
     Input:  ev -> end node
             sv -> start node
             Gm -> Movement Graph
 
-    Output: len_path -> length of the shortest path between ev and sv in Gm 
+    Output: len_path -> length of the shortest path between ev and sv in Gm
     """
     pass
 
