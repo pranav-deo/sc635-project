@@ -56,6 +56,13 @@ def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_path, nodes_used, time_take
     return min_dist(v, v0, Gm, Gc, num_uav, nodes_at_new[:], nodes_path_new[:], nodes_used[:], time_taken + 1)
 
 
+def list_to_str(path):
+    return " ".join(["-".join([str(x) for x in path[i]]) for i in range(len(path))])
+
+def com_to_str(path):
+    return "   ".join(str(path[i][-1]) + "-" + str(path[i + 1][0]) for i in range(len(path) - 1))
+
+
 def min_latency(Vs, v0, num_uav, Gm, Gc):
     """
     Input:  Vs -> list of SL node numbers
