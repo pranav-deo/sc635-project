@@ -11,7 +11,7 @@ Output: subtours t 1, . . ., t k, MLP and schedule (st(v), sv v, ev v, st v) ∀
 
 
 import numpy as np
-from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp, plot_graph
+from utils_h1 import min_latency, solve_tsp, split_tour, distGM, minmax_matching, mlp, plot_graph, list_to_str, com_to_str
 
 # 8 -> SL, 0 -> BS
 
@@ -21,14 +21,25 @@ Gm = {8: [5], 5: [4, 8, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0
 # Communication Graph
 Gc = {8: [5, 4, 6], 5: [8, 6], 6: [5, 8, 7], 4: [3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
 
-Vs = [8]  # List of SLs
-r = 2  # Maximum Number of UAVs
-Lc = 4  # Maximum Latencies
+Vs = [8, 4]  # List of SLs
+r = 3  # Maximum Number of UAVs
+Lc = 4  # Maximum Latency
 V0 = 0  # Base station Node
 
-# x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
-# print(x)
+Vs = [int(x) for x in input("List of sensing locations (space separated) : ").split(" ")]
+r = int(input("Maximum Number of UAVs : "))
+Lc = int(input("Maximum Latency : "))
 
+x = min_latency(Vs=Vs, v0=V0, num_uav=r, Gm=Gm, Gc=Gc)
+for i in range(len(x)):
+    print("=" * 100)
+    print("sensing location : " + str(Vs[i]))
+    print("time taken : " + str(x[i][0]))
+    print("number of UAVs used : " + str(len(x[i][1])))
+    print("route of information : " + list_to_str(x[i][1]))
+    print("communication links used : " + com_to_str(x[i][1]))
+
+exit()
 optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
 print(optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost)
 
@@ -53,9 +64,10 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
     k = r // gamma
 
     optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
-    # print("----")
-    # print(optimal_path_in_points_idxs)
-    # exit()
+    print("----")
+    print(optimal_path_in_points_idxs, k, Lc)
+    print(distance_matrix)
+    exit()
     tour_array = split_tour(optimal_path_in_points_idxs, k, Lc, distance_matrix)
 
     for ii in range(1, k + 1):

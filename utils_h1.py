@@ -7,11 +7,13 @@ import networkx as nx
 from matplotlib import pyplot as plt
 
 
-def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, time_taken):
+def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_path, nodes_used, time_taken):
     latest_nodes = nodes_at[:]
+    paths_nodes = nodes_path[:]
     # print(time_taken, nodes_at)
     while latest_nodes:
         latest_nodes_new = []
+        paths_nodes_new = []
         len_nodes_at = len(latest_nodes)
         for i in range(len_nodes_at):
             if latest_nodes[i][1] < num_uav:
@@ -20,19 +22,45 @@ def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, time_taken):
                     if new_node not in nodes_used:
                         nodes_used.append(new_node)
                         nodes_at.append(new_node)
+                        path = paths_nodes[i][:]
+                        path.append(new_node)
+                        nodes_path.append(path[:])
+                        paths_nodes_new.append(path[:])
                         latest_nodes_new.append(new_node)
         latest_nodes = latest_nodes_new[:]
+        paths_nodes = paths_nodes_new[:]
     # print(time_taken, nodes_at)
     nodes_at_new = []
-    for node in nodes_at:
+    nodes_path_new = []
+    # for node in nodes_at:
+    for i in range(len(nodes_at)):
+        node = nodes_at[i]
         if node[0] == v:
-            return time_taken
+            # print(nodes_path[i])
+            path = [[]]
+            last_drone = 1
+            for node in nodes_path[i]:
+                if last_drone is not node[1]:
+                    path.append([])
+                    last_drone = node[1]
+                path[-1].append(node[0])
+            return time_taken, path
         for point in Gm[node[0]]:
             new_node = [point, node[1]]
             if new_node not in nodes_used:
                 nodes_used.append(new_node)
                 nodes_at_new.append(new_node)
-    return min_dist(v, v0, Gm, Gc, num_uav, nodes_at_new[:], nodes_used[:], time_taken + 1)
+                path = nodes_path[i][:]
+                path.append(new_node)
+                nodes_path_new.append(path[:])
+    return min_dist(v, v0, Gm, Gc, num_uav, nodes_at_new[:], nodes_path_new[:], nodes_used[:], time_taken + 1)
+
+
+def list_to_str(path):
+    return " ".join(["-".join([str(x) for x in path[i]]) for i in range(len(path))])
+
+def com_to_str(path):
+    return "   ".join(str(path[i][-1]) + "-" + str(path[i + 1][0]) for i in range(len(path) - 1))
 
 
 def min_latency(Vs, v0, num_uav, Gm, Gc):
@@ -49,10 +77,12 @@ def min_latency(Vs, v0, num_uav, Gm, Gc):
     for v in Vs:
         nodes_at = []
         nodes_used = []
+        nodes_path = []
         for node in Gc[v0]:
             nodes_at.append([node, 1])
             nodes_used.append([node, 1])
-        x = min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_used, 0)
+            nodes_path.append([[node, 1]])
+        x = min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_path, nodes_used, 0)
         dis_array.append(x)
     return dis_array
 
