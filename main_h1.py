@@ -21,14 +21,15 @@ Gm = {8: [5], 5: [4, 8, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0
 # Communication Graph
 Gc = {8: [5, 4, 6], 5: [8, 6], 6: [5, 8, 7], 4: [3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
 
-Vs = [8]  # List of SLs
-r = 2  # Maximum Number of UAVs
+Vs = [8, 4]  # List of SLs
+r = 3  # Maximum Number of UAVs
 Lc = 4  # Maximum Latencies
 V0 = 0  # Base station Node
 
-# x = min_latency(Vs=Vs, v0=V0, num_uav=3, Gm=Gm, Gc=Gc)
-# print(x)
+x = min_latency(Vs=Vs, v0=V0, num_uav=r, Gm=Gm, Gc=Gc)
+print(x)
 
+exit()
 optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
 print(optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost)
 
@@ -52,9 +53,10 @@ def give_m1(Gm, Gc, Vs, r, Lc, V0):
     k = r // gamma
 
     optimal_path_in_points_idxs, optimal_path_in_sets_idxs, optimal_cost, distance_matrix = solve_tsp(Vs, Gm)
-    # print("----")
-    # print(optimal_path_in_points_idxs)
-    # exit()
+    print("----")
+    print(optimal_path_in_points_idxs, k, Lc)
+    print(distance_matrix)
+    exit()
     tour_array = split_tour(optimal_path_in_points_idxs, k, Lc, distance_matrix)
 
     for ii in range(1, k + 1):
