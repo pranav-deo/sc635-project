@@ -21,16 +21,25 @@ Gm = {8: [5], 5: [4, 8, 6], 6: [5], 4: [5, 3], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0
 # Communication Graph
 Gc = {8: [5, 4, 6], 5: [8, 6], 6: [5, 8, 7], 4: [3, 8], 3: [4, 2], 2: [3, 1], 1: [2, 7, 0], 7: [1, 6], 0: [1]}
 
-Vs = [8, 4]  # List of SLs
+plot_graph(Gm, "Movement Graph")
+plot_graph(Gc, "Communication Graph")
+
+# Vs = [8, 4]  # List of SLs
+Vs = 8  # SL for the graph
 r = 3  # Maximum Number of UAVs
 Lc = 4  # Maximum Latency
 V0 = 0  # Base station Node
 
-Vs = [int(x) for x in input("List of sensing locations (space separated) : ").split(" ")]
+# Vs = [int(x) for x in input("List of sensing locations (space separated) : ").split(" ")]
+Vs = [int(input("List of sensing locations : "))]
 r = int(input("Maximum Number of UAVs : "))
 Lc = int(input("Maximum Latency : "))
 
 x = min_latency(Vs=Vs, v0=V0, num_uav=r, Gm=Gm, Gc=Gc)
+for i in range(len(x)):
+    if x[i][0] > Lc:
+        print("This mission cannot be completed in given Latency bound. Please increase the bound or number of UAVs")
+        exit()
 for i in range(len(x)):
     print("=" * 100)
     print("sensing location : " + str(Vs[i]))

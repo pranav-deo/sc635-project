@@ -2,7 +2,6 @@
 
 from python_tsp.exact import solve_tsp_dynamic_programming
 import numpy as np
-from skimage.future.graph import rag
 import networkx as nx
 from matplotlib import pyplot as plt
 
@@ -58,6 +57,7 @@ def min_dist(v, v0, Gm, Gc, num_uav, nodes_at, nodes_path, nodes_used, time_take
 
 def list_to_str(path):
     return " ".join(["-".join([str(x) for x in path[i]]) for i in range(len(path))])
+
 
 def com_to_str(path):
     return "   ".join(str(path[i][-1]) + "-" + str(path[i + 1][0]) for i in range(len(path) - 1))
